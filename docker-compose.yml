@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  yt-news-bot:
+    build: .
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/sylvan-surf-431305-q4-45b65b1c6536.json
+    volumes:
+      - .:/app
+      - /Users/ryanbloch/Downloads/Coding/AutomatedYT/sylvan-surf-431305-q4-45b65b1c6536.json:/app/sylvan-surf-431305-q4-45b65b1c6536.json
+    env_file:
+      - .env
+    command: python thumbnail.py
