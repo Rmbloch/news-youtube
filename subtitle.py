@@ -40,7 +40,7 @@ def split_transcript(transcript):
         current_segment = []
 
         for word in words:
-            if len(" ".join(current_segment + [word])) <= 55:
+            if len(" ".join(current_segment + [word])) <= 15:
                 current_segment.append(word)
             else:
                 segments.append(" ".join(current_segment))
@@ -84,7 +84,7 @@ def transcribe_audio(audio_file):
             for i in range(1, len(words)):
                 word_info = words[i]
                 new_transcript = transcript + " " + word_info.word
-                if len(new_transcript) > 55:
+                if len(new_transcript) > 15:
                     segments = split_transcript(transcript)
                     segment_start_time = start_time
                     for segment in segments:

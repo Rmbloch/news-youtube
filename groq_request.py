@@ -26,7 +26,7 @@ def generate_description(articles):
         messages=[
             {
                 "role": "system",
-                "content": "Given multiple articles, generate a short YouTube description that covers all of the articles while mixing in popular keywords without the hashtag. DO NOT EXCEED 4,000 CHARACTERS. JUST RESPOND WITH THE DESCRIPTION: "
+                "content": "Given multiple articles, generate a short YouTube description that covers all of the articles while mixing in popular keywords without the hashtag. DO NOT EXCEED 4,000 CHARACTERS. JUST RESPOND WITH THE DESCRIPTION NO QUOTES: "
             },
             {
                 "role": "user",

@@ -23,8 +23,8 @@ class ThumbnailGenerator:
         y = padding
 
         # Draw the text shadow
-        shadow_color = (242,134,25,255)  # adjust as needed
-        shadow_offset = 4  # adjust as needed
+        shadow_color = (242,134,25,255) 
+        shadow_offset = 4  
         draw.text((x + shadow_offset, y + shadow_offset), text, fill=shadow_color, font=font)
 
         # Draw the text on the image
@@ -36,8 +36,8 @@ class ThumbnailGenerator:
             image2 = Image.open(image2)
 
             # Define the padding and border size
-            padding = 20  # adjust as needed
-            border_size = 2  # adjust as needed
+            padding = 20 
+            border_size = 2  
 
             # Resize the images to fit the width of the thumbnail, accounting for padding and border
             image1 = image1.resize((self.width // 2 - padding * 2 - border_size * 2, self.height // 2 - padding * 2 - border_size * 2))

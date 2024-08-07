@@ -34,13 +34,13 @@ def get_authenticated_service():
 
     return build('youtube', 'v3', credentials=credentials)
 
-def upload_to_youtube(video_file, description, tags, thumbnail, image_1, image_2):
+def upload_to_youtube(video_file, description, tags, image_1, image_2):
     youtube = get_authenticated_service()
     request = youtube.videos().insert(
         part="snippet,status",
         body={
             "snippet": {
-                "title": f"Daily Global News {(datetime.now(pytz.timezone('America/Los_Angeles')) - timedelta(days=1)).strftime('%Y-%m-%d')}",
+                "title": f"Daily Global News {(datetime.now(pytz.timezone('America/Los_Angeles'))).strftime('%Y-%m-%d')}",
                 "description": description,
                 "tags": tags,
                 "categoryId": "25"
@@ -55,7 +55,7 @@ def upload_to_youtube(video_file, description, tags, thumbnail, image_1, image_2
 
     thumbnail_generator = ThumbnailGenerator()
     thumbnail_generator.generate(
-        f" Daily Global News\n {(datetime.now(pytz.timezone('America/Los_Angeles')) - timedelta(days=1)).strftime('%Y-%m-%d')}",
+        f" Daily Global News\n {(datetime.now(pytz.timezone('America/Los_Angeles'))).strftime('%Y-%m-%d')}",
         'LEMONMILK-MediumItalic.otf',
         image1=image_1,
         image2=image_2
@@ -67,3 +67,22 @@ def upload_to_youtube(video_file, description, tags, thumbnail, image_1, image_2
         media_body=MediaFileUpload('thumbnail.jpg', mimetype='image/jpeg')
     ).execute()
     return response
+
+def upload_short(video_file, description, tags):
+    youtube = get_authenticated_service()
+    request = youtube.videos().insert(
+        part="snippet,status",
+        body={
+            "snippet": {
+                "title": f"Daily Global News {(datetime.now(pytz.timezone('America/Los_Angeles'))).strftime('%Y-%m-%d')}",
+                "description": description,
+                "tags": tags,
+                "categoryId": "25"
+            },
+            "status": {
+                "privacyStatus": "public"
+            }
+        },
+        media_body=MediaFileUpload(video_file)
+    )
+    response = request.execute()

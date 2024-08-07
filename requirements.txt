@@ -13,3 +13,4 @@ bs4
 pillow==9.5.0
 ffmpeg-python
 pytz
+openai

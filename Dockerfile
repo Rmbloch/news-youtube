@@ -23,8 +23,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the script into the container at /app
 COPY script.py /app/script.py
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
-
 # Run script.py when the container launches
 CMD ["python", "script.py"]

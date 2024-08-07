@@ -1,6 +1,6 @@
 import os
 import random
-from moviepy.editor import AudioFileClip, VideoFileClip, ImageClip, concatenate_videoclips, CompositeVideoClip, concatenate_audioclips, TextClip
+from moviepy.editor import AudioFileClip, VideoFileClip, ImageClip, concatenate_videoclips, CompositeVideoClip, concatenate_audioclips, TextClip, clips_array
 from moviepy.video.tools.subtitles import SubtitlesClip
 from moviepy.config import change_settings
 change_settings({"IMAGEMAGICK_BINARY": "/usr/bin/convert"})
@@ -37,3 +37,35 @@ def create_video(audio_files, image_files, output_file):
     final_clip = final_clip.set_audio(audio_track)
     final_clip.write_videofile(output_file, fps=60, bitrate='9000k', codec='libx264', audio_codec='aac')
 
+def create_short(image_file, audio_file, video, output_file="short.mp4"):
+    audio = AudioFileClip(audio_file)
+    image_clip = ImageClip(image_file).set_duration(audio.duration)
+
+    # Load the Minecraft video
+    video_clip = VideoFileClip(video).without_audio()
+
+    max_start_time = video_clip.duration - image_clip.duration
+    start_time = random.uniform(0, max_start_time)
+    video_subclip = video_clip.subclip(start_time, start_time + image_clip.duration)
+
+    # Resize clips to half the final video's height
+    image_clip = image_clip.resize(width=1080)
+    x1 = (video_subclip.w - 1080) // 2
+
+    # Crop the video
+    video_subclip = video_subclip.crop(x1=x1, y1=0, width=1080)
+
+    # Stack the clips vertically
+    final_video = clips_array([[image_clip], [video_subclip]])
+
+    # Adjust the final video's height to 1920 pixels
+    final_video = final_video.resize(height=1920)
+
+    audio.write_audiofile("short_audio.mp3", bitrate='320k')
+    transcribe_audio("short_audio.mp3")
+    generator = lambda txt: TextClip(txt, font='LEMONMILK-MediumItalic.otf', fontsize=100, color='white', stroke_color='black', stroke_width=1)
+    subtitles = SubtitlesClip("subtitles.srt", generator)
+    final_video = CompositeVideoClip([final_video, subtitles.set_position(('center', 1750))])
+
+    final_video = final_video.set_audio(audio)
+    final_video.write_videofile(output_file, fps=60, bitrate='9000k', codec='libx264', audio_codec='aac')

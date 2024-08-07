@@ -3,16 +3,16 @@ import time
 from PIL import Image
 from io import BytesIO
 
-from config import NEWS_API_KEY
+from config import GNEWS_KEY
 
 def grab_articles(image_files):
-    url = f'https://newsapi.org/v2/top-headlines?language=en&apiKey={NEWS_API_KEY}'
+    url = f'https://gnews.io/api/v4/top-headlines?lang=en&category=general&apikey={GNEWS_KEY}'
     response = requests.get(url)
     if response.status_code == 200:
         articles = response.json()['articles']
         urls = []
         for i, article in enumerate(articles):
-            image_url = article['urlToImage']
+            image_url = article['image']
             if image_url:
                 filename = f'image_{i}.jpg'
                 if download_image(image_url, filename):
@@ -23,6 +23,8 @@ def grab_articles(image_files):
         time.sleep(1)
         return urls
     else:
+        print(f"Request failed with status code {response.status_code}")
+        print(f"Response text: {response.text}")
         raise Exception("Failed to fetch articles. Stopping execution.")
 
 def download_image(url, filename):
