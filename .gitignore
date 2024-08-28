@@ -1,6 +1,9 @@
 .env
 sylvan-surf-431305-q4-45b65b1c6536.json
-client_secret_626888950265-3ais7p52ao0p7nrsuap89b27bd57ov5s.apps.googleusercontent.com.json
+client_secret_626888950265-28j9q2tq8j5noe3jh74t2udf5mlodi85.apps.googleusercontent.com(1).json
 minecraft.mp4
 .DS_Store
 __pycache__
+env
+get_cookies.py
+upload_tiktok.py
