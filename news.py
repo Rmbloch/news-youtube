@@ -35,6 +35,10 @@ def download_image(url, filename):
     except (IOError, SyntaxError) as e:
         print('Bad file:', filename)  # print out the names of corrupt files
         return False
-    with open(filename, 'wb') as f:
-        f.write(response.content)
-    return True
+    if len(img.getbands()) in (3, 4):
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        return True
+    else:
+        print('Image is not 3D:', filename)
+        return False

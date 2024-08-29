@@ -88,13 +88,14 @@ def transcribe_audio(audio_file):
                     segments = split_transcript(transcript)
                     segment_start_time = start_time
                     for segment in segments:
-                        segment_end_time = end_time if segment == segments[-1] else word_info.start_time
-                        srt_lines.append(f"{index}")
-                        srt_lines.append(f"{format_time(segment_start_time.seconds + segment_start_time.microseconds * 1e-6)} --> {format_time(segment_end_time.seconds + segment_end_time.microseconds * 1e-6)}")
-                        srt_lines.append(segment)
-                        srt_lines.append("")
-                        index += 1
-                        segment_start_time = word_info.start_time
+                        if segment:  # Check if segment is not empty
+                          segment_end_time = end_time if segment == segments[-1] else word_info.start_time
+                          srt_lines.append(f"{index}")
+                          srt_lines.append(f"{format_time(segment_start_time.seconds + segment_start_time.microseconds * 1e-6)} --> {format_time(segment_end_time.seconds + segment_end_time.microseconds * 1e-6)}")
+                          srt_lines.append(segment)
+                          srt_lines.append("")
+                          index += 1
+                          segment_start_time = word_info.start_time
                     start_time = word_info.start_time
                     transcript = word_info.word
                 else:

@@ -1,46 +1,38 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
 from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow
-from config import CLIENT_SECRETS_FILE
 import socket
+import os
+import pickle
 import pytz
 from thumbnail import ThumbnailGenerator
 
 socket.setdefaulttimeout(1800)
 
 SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
-REFRESH_TOKEN = "1//06U_XNcBRO4sXCgYIARAAGAYSNwF-L9IrTqGPn_i6s2Z7DyCP0WVMOr2KyO0NBYFlMisXhjeQri3ZPsZeJ65Auf9sRiaW9gotYZE"
+TOKEN_PICKLE_FILE = "token.pickle"
 
 def get_authenticated_service():
-    # Load client secrets
-    flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
+    creds = None
+    if os.path.exists(TOKEN_PICKLE_FILE):
+        with open(TOKEN_PICKLE_FILE, 'rb') as token:
+            creds = pickle.load(token)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            raise Exception("No valid credentials found")
 
-    # Use the refresh token to get new credentials
-    credentials = Credentials.from_authorized_user_info(
-        {
-            "client_id": flow.client_config['client_id'],
-            "client_secret": flow.client_config['client_secret'],
-            "refresh_token": REFRESH_TOKEN
-        },
-        SCOPES
-    )
+    return build('youtube', 'v3', credentials=creds)
 
-    # If the credentials are expired, refresh them
-    if credentials.expired:
-        credentials.refresh(Request())
-
-    return build('youtube', 'v3', credentials=credentials)
-
-def upload_to_youtube(video_file, description, tags, image_1, image_2):
+def upload_to_youtube(video_file, description, tags, title, image_1, image_2):
     youtube = get_authenticated_service()
     request = youtube.videos().insert(
         part="snippet,status",
         body={
             "snippet": {
-                "title": f"Daily Global News {(datetime.now(pytz.timezone('America/Los_Angeles'))).strftime('%Y-%m-%d')}",
+                "title": title,
                 "description": description,
                 "tags": tags,
                 "categoryId": "25"
@@ -68,13 +60,13 @@ def upload_to_youtube(video_file, description, tags, image_1, image_2):
     ).execute()
     return response
 
-def upload_short(video_file, description, tags):
+def upload_short(video_file, description, tags, title):
     youtube = get_authenticated_service()
     request = youtube.videos().insert(
         part="snippet,status",
         body={
             "snippet": {
-                "title": f"Daily Global News {(datetime.now(pytz.timezone('America/Los_Angeles'))).strftime('%Y-%m-%d')}",
+                "title": title,
                 "description": description,
                 "tags": tags,
                 "categoryId": "25"

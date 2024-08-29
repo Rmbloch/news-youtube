@@ -13,4 +13,5 @@ bs4
 pillow==9.5.0
 ffmpeg-python
 pytz
-openai
+flask # used for tiktok automation which is not included in repo
+waitress # used for tiktok automation which is not included in repo
